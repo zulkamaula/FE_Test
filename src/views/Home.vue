@@ -39,6 +39,21 @@
                         <h5 class="mt-4">
                             Image Gallery
                         </h5>
+
+                        <div class="row mt-3">
+                            <div class="col p-3 border rounded shadow-sm mx-2">
+                                <i class="fas fa-image fa-2xl"></i>
+                            </div>
+                            <div class="col p-3 border rounded shadow-sm mx-2">
+                                <i class="fas fa-image fa-2xl"></i>
+                            </div>
+                            <div class="col p-3 border rounded shadow-sm mx-2">
+                                <i class="fas fa-image fa-2xl"></i>
+                            </div>
+                            <div class="col p-3 border rounded shadow-sm mx-2">
+                                <i class="fas fa-image fa-2xl"></i>
+                            </div>
+                        </div>
                     </section>
 
                 </div>
