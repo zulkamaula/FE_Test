@@ -57,7 +57,7 @@
                     </section>
 
                     <section id="master-ruas">
-                        <b-container fluid>
+                        <b-container fluid class="my-4">
                             <!-- User Interface controls -->
                             <b-row>
                             <b-col lg="6" class="my-1">
