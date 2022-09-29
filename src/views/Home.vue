@@ -2,10 +2,10 @@
     <div class="container-fluid">
         <div class="row border justify-content-center py-3">
             <div class="col-2 pt-3 pr-0 align-self-start">
-                <div class="border p-2">
+                <div class="border-top border-left p-2 btn-home">
                     Home
                 </div>
-                <div class="border p-2">
+                <div class="border-top border-bottom border-left p-2 btn-master">
                     Master Ruas
                 </div>
             </div>
