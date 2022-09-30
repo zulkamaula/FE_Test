@@ -2,17 +2,17 @@
     <div class="container-fluid">
         <div class="row border justify-content-center py-3">
             <div class="col-2 pt-3 pr-0 align-self-start">
-                <div class="border p-2">
+                <div class="border p-2 bg-light">
                     Home
                 </div>
-                <div class="border p-2">
+                <div class="border p-2 bg-light">
                     Master Ruas
                 </div>
             </div>
             <div class="col-9 py-3 border rounded-lg">
                 <div class="container-fluid">
                     <section class="graph-section">
-                        <h4 class="mb-4">
+                        <h4 class="mb-3">
                             Home
                         </h4>
     
@@ -35,7 +35,7 @@
                         </div>
                     </section>
 
-                    <section class="gallery-section">
+                    <section class="gallery-section mt-4">
                         <h5 class="mt-4">
                             Image Gallery
                         </h5>
