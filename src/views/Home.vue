@@ -14,7 +14,7 @@
                     <transition name="fade2">
                         <section id="graph-section" v-if="homeView">
                             <h4 class="mb-4">
-                                Home
+                                <b>H</b>ome
                             </h4>
         
                             <div class="row mt-4">
@@ -25,12 +25,12 @@
                                 </div>
                                 <div class="col-4">
                                     <div class="border just-box text-center">
-                                        Bar Chart
+                                        <BarChart />
                                     </div>
                                 </div>
                                 <div class="col-4">
                                     <div class="border just-box text-center">
-                                        Line Chart
+                                        <PieChart />
                                     </div>
                                 </div>
                             </div>
@@ -39,7 +39,7 @@
 
                     <transition name="fade2">
                         <section id="gallery-section" v-if="homeView">
-                            <h5 class="mt-4">
+                            <h5 class="mt-5">
                                 Image Gallery
                             </h5>
     
@@ -62,8 +62,13 @@
 
                     <section id="master-ruas">
                         <transition name="fade2">
-                            <div class="btn btn-success" v-if="masterRuasView">
-                                <i class="fas fa-plus-circle text-white mr-3"></i> Tambah Data
+                            <div v-if="masterRuasView">
+                                <h4 class="mb-4">
+                                    <b>R</b>uas
+                                </h4>
+                                <div class="btn btn-success">
+                                    <i class="fas fa-plus-circle text-white mr-3"></i> Tambah Data
+                                </div>
                             </div>
                         </transition>
 
@@ -75,7 +80,7 @@
                             </div>
                         </transition>
                         <transition name="fade2">
-                            <b-container fluid class="my-4 px-0" v-if="masterRuasView || homeView">
+                            <b-container fluid class="my-1 px-0" v-if="masterRuasView || homeView">
                                 <!-- User Interface controls -->
                                 <b-row class="justify-content-between mb-2">
                                     <b-col sm="4" md="4" class="my-1 d-flex align-self-center">
@@ -111,6 +116,7 @@
                                 <b-table
                                 :items="items"
                                 :fields="fields"
+                                :filter="filter"
                                 :current-page="currentPage"
                                 :per-page="perPage"
                                 sticky-header="200px"
@@ -140,13 +146,13 @@
                                     </template>
                                 </b-table>
     
-                                <b-row>
+                                <b-row class="mb-3">
                                     <div class="col">
                                         <small>
                                             Showing <b>1</b> to <b>{{perPage}}</b> of <b>{{totalRows}}</b> entries
                                         </small>
                                     </div>
-                                    <div class="col">
+                                    <div class="col-4">
                                         <b-pagination
                                         v-model="currentPage"
                                         :total-rows="totalRows"
@@ -189,10 +195,16 @@
     import constant from '../constant.js';
     import { Chart, registerables } from 'chart.js';
     Chart.register(...registerables);
+    import BarChart from '@/components/BarChart.vue';
+    import PieChart from '@/components/PieChart.vue';
     // import ChartDataLabels from 'chartjs-plugin-datalabels';
     // Chart.register(...registerables, ChartDataLabels);
 
     export default {
+         components: {
+            BarChart,
+            PieChart
+        },
         data() {
             return {
                 endpoint: process.env.VUE_APP_ENDPOINT,
@@ -200,17 +212,11 @@
                 bulan: constant.bulan,
                 masterRuasView: false,
                 lineChart: '',
-                labelsLine: ["Babol",	"Cabanatuan",	"Daegu",	"Jerusalem",	"Fairfield",	"New York",	"Gangtok", "Buenos Aires", "Hafar Al-Batin", "Idlib"],
-                resDataMultipleLine: [ 
-                    {
-                        label: 'Line Chart',
-                        data: [600,	1150,	342,	6050,	2522,	3241,	1259,	157,	1545, 9841],
-                        fill: false,
-                        borderColor: '#2554FF',
-                        backgroundColor: '#2554FF',
-                        borderWidth: 1
-                    }
-                ],
+                barChart: '',
+                labelsLine: constant.labelsLine,
+                labelsBar: constant.labelsBar,
+                resDataMultipleLine: constant.resDataMultipleLine,
+                resDataBarChart: constant.resDataBarChart,
                 items: [
                     { isActive: true, age: 40, name: { first: 'Dickerson', last: 'Macdonald' } },
                     { isActive: false, age: 21, name: { first: 'Larsen', last: 'Shaw' } },
@@ -270,6 +276,7 @@
         // Set the initial number of items
             this.totalRows = this.items.length
             this.canvasLine()
+            this.canvasBar()
         },
         methods: {
             info(item, index, button) {
@@ -287,6 +294,9 @@
                     if(homeView == false){
                         this.homeView = true;
                         this.masterRuasView = false;
+                        this.$nextTick(() => {
+                            this.canvasLine()
+                        });
                     } else {
                         this.homeView = false;
                     }
@@ -300,6 +310,22 @@
                 }
 
                 console.log(`*** value ==> `, value)
+            },
+            canvasBar() {
+                const ctx2 = document.getElementById("myChart2");
+                this.barChart = new Chart(ctx2, {
+                    type: 'bar',
+                    // labels: this.labelsBar,
+                    data: this.resDataBarChart,
+                    options: {
+                        scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                        }
+                    },
+                })
+
             },
             canvasLine(){
             ///// LINE CHART
