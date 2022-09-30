@@ -124,25 +124,21 @@
                                 show-empty
                                 small
                                 >
-                                    <template #cell(name)="row">
-                                        {{ row.value.first }} {{ row.value.last }}
-                                    </template>
-    
-                                    <template #cell(actions)="row">
-                                        <b-button size="sm" @click="info(row.item, row.index, $event.target)" class="mr-1">
-                                        Info modal
-                                        </b-button>
-                                        <b-button size="sm" @click="row.toggleDetails">
-                                        {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
+                                    <template #cell(gambar)="row">
+                                        <b-button @click="previewGambar(row.value)">
+                                            Preview Gambar
                                         </b-button>
                                     </template>
     
-                                    <template #row-details="row">
-                                        <b-card>
-                                        <ul>
-                                            <li v-for="(value, key) in row.item" :key="key">{{ key }}: {{ value }}</li>
-                                        </ul>
-                                        </b-card>
+                                    <template #cell(aksi)="row">
+                                        <div class="d-flex justify-content-center">
+                                            <b-icon role="button" icon="pencil-fill" class="mx-1" @click="edit(row.data.id)">
+                                            </b-icon>
+                                            <b-icon role="button" icon="eye-fill" class="mx-1" @click="edit(row.data.id)">
+                                            </b-icon>
+                                            <b-icon role="button" icon="trash-fill" class="mx-1" @click="edit(row.data.id)">
+                                            </b-icon>
+                                        </div>
                                     </template>
                                 </b-table>
     
@@ -197,6 +193,7 @@
     Chart.register(...registerables);
     import BarChart from '@/components/BarChart.vue';
     import PieChart from '@/components/PieChart.vue';
+    import axios from 'axios';
     // import ChartDataLabels from 'chartjs-plugin-datalabels';
     // Chart.register(...registerables, ChartDataLabels);
 
@@ -217,68 +214,61 @@
                 labelsBar: constant.labelsBar,
                 resDataMultipleLine: constant.resDataMultipleLine,
                 resDataBarChart: constant.resDataBarChart,
-                items: [
-                    { isActive: true, age: 40, name: { first: 'Dickerson', last: 'Macdonald' } },
-                    { isActive: false, age: 21, name: { first: 'Larsen', last: 'Shaw' } },
-                    {
-                        isActive: false,
-                        age: 9,
-                        name: { first: 'Mini', last: 'Navarro' },
-                        _rowVariant: 'success'
-                    },
-                    { isActive: false, age: 89, name: { first: 'Geneva', last: 'Wilson' } },
-                    { isActive: true, age: 38, name: { first: 'Jami', last: 'Carney' } },
-                    { isActive: false, age: 27, name: { first: 'Essie', last: 'Dunlap' } },
-                    { isActive: true, age: 40, name: { first: 'Thor', last: 'Macdonald' } },
-                    {
-                        isActive: true,
-                        age: 87,
-                        name: { first: 'Larsen', last: 'Shaw' },
-                        _cellVariants: { age: 'danger', isActive: 'warning' }
-                    },
-                    { isActive: false, age: 26, name: { first: 'Mitzi', last: 'Navarro' } },
-                    { isActive: false, age: 22, name: { first: 'Genevieve', last: 'Wilson' } },
-                    { isActive: true, age: 38, name: { first: 'John', last: 'Carney' } },
-                    { isActive: false, age: 29, name: { first: 'Dick', last: 'Dunlap' } }
-                    ],
-                    fields: [
-                    { key: 'name', label: 'Person full name', sortable: true, sortDirection: 'desc' },
-                    { key: 'age', label: 'Person age', sortable: true, class: 'text-center' },
-                    {
-                        key: 'isActive',
-                        label: 'Is Active',
-                        formatter: (value) => {
-                        return value ? 'Yes' : 'No'
-                        },
-                        sortable: true,
-                        sortByFormatted: true,
-                        filterByFormatted: true
-                    },
-                    { key: 'actions', label: 'Actions' }
-                    ],
-                    totalRows: 1,
-                    currentPage: 1,
-                    perPage: 5,
-                    pageOptions: [5, 10, 15, { value: 100, text: "Show a lot" }],
-                    filter: null,
-                    filterOn: [],
-                    infoModal: {
-                    id: 'info-modal',
-                    title: '',
-                    content: ''
-                    } 
+                items: [],
+                fields: [
+                    { key: 'no', label: 'No', sortable: true, sortDirection: 'desc' },
+                    { key: 'ruas', label: 'Ruas', sortable: true, class: 'text-center' },
+                    { key: 'unit_kerja', label: 'Unit Kerja', sortable: true, class: 'text-center' },
+                    { key: 'gambar', label: 'Gambar', sortable: true, class: 'text-center' },
+                    { key: 'tanggal', label: 'Tanggal', sortable: true, class: 'text-center' },
+                    { key: 'aksi', label: 'Aksi', class: 'text-center' }
+                ],
+                totalRows: 1,
+                currentPage: 1,
+                perPage: 5,
+                pageOptions: [5, 10, 15, { value: 100, text: "Show a lot" }],
+                filter: null,
+                filterOn: [],
+                infoModal: {
+                id: 'info-modal',
+                title: '',
+                content: ''
+                } 
             }
         },
         created() {
             // console.log(`===========> this.endpoint `, this.endpoint)
         },
         mounted() {
-        // Set the initial number of items
-            this.totalRows = this.items.length
+            // Set the initial number of items
+            this.getDataRuas()
             this.canvasLine()
             this.canvasBar()
         },
         methods: {
+            getDataRuas(){
+                const api = this.endpoint
+                axios.get(api)
+                .then((res) => {
+                    const data_result = res.data;
+                    let data_items = [];
+                    data_result.forEach((i, index) => data_items.push({
+                        no: index+1,
+                        ruas: i.ruas,
+                        unit_kerja: i.unit,
+                        gambar: i.picture,
+                        tanggal: i.date_created,
+                        aksi: i
+                    }))
+                    this.items = data_items;
+                    this.totalRows = this.items.length;
+                    console.log(`===========> data_result `, data_result)
+                })
+                .catch((err) => {
+                    const error = err.response;
+                    console.log(`===========> error `, error)
+                })
+            },
             info(item, index, button) {
                 this.infoModal.title = `Row index: ${index}`
                 this.infoModal.content = JSON.stringify(item, null, 2)
