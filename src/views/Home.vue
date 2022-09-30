@@ -44,17 +44,8 @@
                             </h5>
     
                             <div class="row mt-3">
-                                <div class="col p-3 border rounded shadow-sm mx-2">
-                                    <i class="fas fa-image fa-2xl"></i>
-                                </div>
-                                <div class="col p-3 border rounded shadow-sm mx-2">
-                                    <i class="fas fa-image fa-2xl"></i>
-                                </div>
-                                <div class="col p-3 border rounded shadow-sm mx-2">
-                                    <i class="fas fa-image fa-2xl"></i>
-                                </div>
-                                <div class="col p-3 border rounded shadow-sm mx-2">
-                                    <i class="fas fa-image fa-2xl"></i>
+                                <div class="col p-3 border rounded shadow-sm mx-2" v-for="gimg in gallerImage" :key="gimg.key">
+                                    <b-img :src="gimg.link_img" fluid :alt="gimg.name_alt"></b-img>
                                 </div>
                             </div>
                         </section>
@@ -129,6 +120,10 @@
                                             Preview Gambar
                                         </b-button>
                                     </template>
+
+                                    <!-- <template #cell(tanggal)="row">
+                                        {{ row.value.slice(0, 10) }}
+                                    </template> -->
     
                                     <template #cell(aksi)="row">
                                         <div class="d-flex justify-content-center">
@@ -165,8 +160,6 @@
                                 </b-modal>
                             </b-container>
                         </transition>
-
-                        
                     </section>
 
                 </div>
@@ -194,11 +187,12 @@
     import BarChart from '@/components/BarChart.vue';
     import PieChart from '@/components/PieChart.vue';
     import axios from 'axios';
+    import Swal from 'sweetalert2';
     // import ChartDataLabels from 'chartjs-plugin-datalabels';
     // Chart.register(...registerables, ChartDataLabels);
 
     export default {
-         components: {
+        components: {
             BarChart,
             PieChart
         },
@@ -214,6 +208,7 @@
                 labelsBar: constant.labelsBar,
                 resDataMultipleLine: constant.resDataMultipleLine,
                 resDataBarChart: constant.resDataBarChart,
+                gallerImage: constant.gallerImage,
                 items: [],
                 fields: [
                     { key: 'no', label: 'No', sortable: true, sortDirection: 'desc' },
@@ -246,23 +241,31 @@
             this.canvasBar()
         },
         methods: {
+            edit(value){
+                console.log(`===========> value `, value)
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sukses coba'
+                })
+            },
             getDataRuas(){
                 const api = this.endpoint
                 axios.get(api)
                 .then((res) => {
                     const data_result = res.data;
+                    console.log(`===========> data_result `, data_result)
                     let data_items = [];
                     data_result.forEach((i, index) => data_items.push({
                         no: index+1,
                         ruas: i.ruas,
                         unit_kerja: i.unit,
                         gambar: i.picture,
-                        tanggal: i.date_created,
+                        tanggal: i.date_create.slice(0, 10),
                         aksi: i
                     }))
                     this.items = data_items;
+                    console.log(`===========> items `, this.items)
                     this.totalRows = this.items.length;
-                    console.log(`===========> data_result `, data_result)
                 })
                 .catch((err) => {
                     const error = err.response;

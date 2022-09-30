@@ -39,10 +39,35 @@ const resDataBarChart = {
     borderWidth: 1
   }
 
+const gallerImage = [
+    {
+        key: 'img-1',
+        name_alt: 'toll-1',
+        link_img: 'https://www.nusantarainfrastructure.com/assets/images/section/md/1569298529-_en.jpg'
+    },
+    {
+        key: 'img-2',
+        name_alt: 'toll-2',
+        link_img: 'https://d16yj43vx3i1f6.cloudfront.net/uploads/2020/06/GettyImages-182475239-CROP.jpg'
+    },
+    {
+        key: 'img-3',
+        name_alt: 'toll-3',
+        link_img: 'https://res.cloudinary.com/astra-infra/image/upload/v1656411403/header_tangerang_merak__4_nqmbhg.jpg'
+    },
+    {
+        key: 'img-4',
+        name_alt: 'toll-4',
+        link_img: 'https://exadel.com/wp-content/uploads/2019/09/shutterstock_626914814-tollroad.png'
+    },
+    
+]
+
 export default {
     bulan,
     labelsLine,
     labelsBar,
     resDataMultipleLine,
-    resDataBarChart
+    resDataBarChart,
+    gallerImage
 }
