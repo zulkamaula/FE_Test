@@ -12,6 +12,7 @@
 }
 
 .just-box {
+    cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -24,6 +25,10 @@
 
 .just-box:hover {
     box-shadow: 0 6px 4px -6px rgba(49, 49, 49, .2);
+}
+
+.just-box:active {
+    transform: scale(.99) translateY(1px);
 }
 
 .btn-set {
@@ -257,4 +262,15 @@
     -moz-box-shadow:    0 8px 6px -6px #ccc;
     -webkit-box-shadow: 0 8px 6px -6px #ccc;
     box-shadow:         0 8px 6px -6px #ccc, 0px 1px 5px rgba(204, 204, 204, .5) inset !important;
+}
+
+.btn-home {
+    background-color: rgb(241, 241, 241);
+    border-radius: 5px 0 0 0;
+}
+
+.btn-master {
+    opacity: .8;
+    background-color: rgb(241, 241, 241);
+    border-radius: 0 0 0 5px;
 }
