@@ -9,7 +9,7 @@
                     Master Ruas
                 </div>
             </div>
-            <div class="col-9 py-3 px-3 rounded-lg bg-contain">
+            <div class="col-10 py-3 px-3 rounded-lg bg-contain">
                 <div class="container-fluid">
                     <transition name="fade2">
                         <section id="graph-section" v-if="homeView">
@@ -20,7 +20,7 @@
                             <div class="row mt-4">
                                 <div class="col-4">
                                     <div class="border just-box text-center">
-                                        Grafik
+                                        <canvas width="20vw" height="150px" id="myChart3"></canvas>
                                     </div>
                                 </div>
                                 <div class="col-4">
@@ -186,12 +186,31 @@
 </template>
 
 <script>
+    import constant from '../constant.js';
+    import { Chart, registerables } from 'chart.js';
+    Chart.register(...registerables);
+    // import ChartDataLabels from 'chartjs-plugin-datalabels';
+    // Chart.register(...registerables, ChartDataLabels);
+
     export default {
         data() {
             return {
                 endpoint: process.env.VUE_APP_ENDPOINT,
                 homeView: true,
+                bulan: constant.bulan,
                 masterRuasView: false,
+                lineChart: '',
+                labelsLine: ["Babol",	"Cabanatuan",	"Daegu",	"Jerusalem",	"Fairfield",	"New York",	"Gangtok", "Buenos Aires", "Hafar Al-Batin", "Idlib"],
+                resDataMultipleLine: [ 
+                    {
+                        label: 'Line Chart',
+                        data: [600,	1150,	342,	6050,	2522,	3241,	1259,	157,	1545, 9841],
+                        fill: false,
+                        borderColor: '#2554FF',
+                        backgroundColor: '#2554FF',
+                        borderWidth: 1
+                    }
+                ],
                 items: [
                     { isActive: true, age: 40, name: { first: 'Dickerson', last: 'Macdonald' } },
                     { isActive: false, age: 21, name: { first: 'Larsen', last: 'Shaw' } },
@@ -250,6 +269,7 @@
         mounted() {
         // Set the initial number of items
             this.totalRows = this.items.length
+            this.canvasLine()
         },
         methods: {
             info(item, index, button) {
@@ -280,6 +300,59 @@
                 }
 
                 console.log(`*** value ==> `, value)
+            },
+            canvasLine(){
+            ///// LINE CHART
+            const ctx3 = document.getElementById("myChart3");
+            const datalabels = {
+                font: {
+                    weight: 'bold',
+                },
+                textShadowColor: 'black',
+                textShadowBlur: 5,
+                color: 'white',
+                anchor: 'center',
+                align: 'left',
+                offset: 10,
+                padding: 5,
+                backgroundColor: 'rgba(96, 57, 64, 0.5)',
+                borderRadius: 5,
+                formatter: (value, context) => {
+                const format = Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                    maximumSignificantDigits: 3
+                }).format(value);
+                return `${context.dataset.label.toUpperCase()} : ${format}`;
+                },
+                display: (context) => {
+                return (context.dataIndex === context.dataset.data.length - 1)
+                }
+            }
+            this.lineChart = new Chart(ctx3, {
+                type: "line",
+                data: {
+                labels: this.labelsLine,
+                datasets: this.resDataMultipleLine
+                },
+                options: {
+                layout:{
+                    padding: 20
+                },
+                plugins: {
+                    datalabels,
+                    filler: {
+                    propagate: true
+                    }
+                },
+                tension: 0.4,
+                responsive: true,
+                responsiveAnimationDuration: 0,
+                maintainAspectRatio: true,
+                aspectRatio: 2,
+                oneResie: null,
+                }
+            });
             }
         },
     }
