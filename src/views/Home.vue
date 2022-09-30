@@ -1,247 +1,187 @@
 <template>
-    <div class="container-fluid">
-        <div class="row border justify-content-center py-3">
-            <div class="col-2 pt-3 pr-0 align-self-start">
-                <div class="border-top border-left p-2 btn-home">
+    <div class="container-fluid m-0 py-5">
+        <div class="row justify-content-center py-3">
+            <div class="col-1 pt-3 pr-0 align-self-start" style="font-size: 1vmax">
+                <div class="bg-contain py-2 pl-3 pr-0 btn-home" :class="{'btn-page-active': homeView == true}" @click="setPage('home')">
                     Home
                 </div>
-                <div class="border-top border-bottom border-left p-2 btn-master">
+                <div class="bg-contain py-2 pl-3 pr-0 btn-master" :class="{'btn-page-active': masterRuasView == true}" @click="setPage('master-ruas')">
                     Master Ruas
                 </div>
             </div>
-            <div class="col-9 py-3 border rounded-lg">
+            <div class="col-9 py-3 px-3 rounded-lg bg-contain">
                 <div class="container-fluid">
-                    <section id="graph-section">
-                        <h4 class="mb-4">
-                            Home
-                        </h4>
+                    <transition name="fade2">
+                        <section id="graph-section" v-if="homeView">
+                            <h4 class="mb-4">
+                                Home
+                            </h4>
+        
+                            <div class="row mt-4">
+                                <div class="col-4">
+                                    <div class="border just-box text-center">
+                                        Grafik
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="border just-box text-center">
+                                        Bar Chart
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="border just-box text-center">
+                                        Line Chart
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </transition>
+
+                    <transition name="fade2">
+                        <section id="gallery-section" v-if="homeView">
+                            <h5 class="mt-4">
+                                Image Gallery
+                            </h5>
     
-                        <div class="row mt-4">
-                            <div class="col-4">
-                                <div class="border just-box text-center">
-                                    Grafik
+                            <div class="row mt-3">
+                                <div class="col p-3 border rounded shadow-sm mx-2">
+                                    <i class="fas fa-image fa-2xl"></i>
+                                </div>
+                                <div class="col p-3 border rounded shadow-sm mx-2">
+                                    <i class="fas fa-image fa-2xl"></i>
+                                </div>
+                                <div class="col p-3 border rounded shadow-sm mx-2">
+                                    <i class="fas fa-image fa-2xl"></i>
+                                </div>
+                                <div class="col p-3 border rounded shadow-sm mx-2">
+                                    <i class="fas fa-image fa-2xl"></i>
                                 </div>
                             </div>
-                            <div class="col-4">
-                                <div class="border just-box text-center">
-                                    Bar Chart
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="border just-box text-center">
-                                    Line Chart
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <section id="gallery-section">
-                        <h5 class="mt-4">
-                            Image Gallery
-                        </h5>
-
-                        <div class="row mt-3">
-                            <div class="col p-3 border rounded shadow-sm mx-2">
-                                <i class="fas fa-image fa-2xl"></i>
-                            </div>
-                            <div class="col p-3 border rounded shadow-sm mx-2">
-                                <i class="fas fa-image fa-2xl"></i>
-                            </div>
-                            <div class="col p-3 border rounded shadow-sm mx-2">
-                                <i class="fas fa-image fa-2xl"></i>
-                            </div>
-                            <div class="col p-3 border rounded shadow-sm mx-2">
-                                <i class="fas fa-image fa-2xl"></i>
-                            </div>
-                        </div>
-                    </section>
+                        </section>
+                    </transition>
 
                     <section id="master-ruas">
-                        <b-container fluid class="my-4">
-                            <!-- User Interface controls -->
-                            <b-row>
-                            <b-col lg="6" class="my-1">
-                                <b-form-group
-                                label="Sort"
-                                label-for="sort-by-select"
-                                label-cols-sm="3"
-                                label-align-sm="right"
-                                label-size="sm"
-                                class="mb-0"
-                                v-slot="{ ariaDescribedby }"
-                                >
-                                <b-input-group size="sm">
-                                    <b-form-select
-                                    id="sort-by-select"
-                                    v-model="sortBy"
-                                    :options="sortOptions"
-                                    :aria-describedby="ariaDescribedby"
-                                    class="w-75"
-                                    >
-                                    <template #first>
-                                        <option value="">-- none --</option>
-                                    </template>
-                                    </b-form-select>
+                        <transition name="fade2">
+                            <div class="btn btn-success" v-if="masterRuasView">
+                                <i class="fas fa-plus-circle text-white mr-3"></i> Tambah Data
+                            </div>
+                        </transition>
 
-                                    <b-form-select
-                                    v-model="sortDesc"
-                                    :disabled="!sortBy"
-                                    :aria-describedby="ariaDescribedby"
-                                    size="sm"
-                                    class="w-25"
-                                    >
-                                    <option :value="false">Asc</option>
-                                    <option :value="true">Desc</option>
-                                    </b-form-select>
-                                </b-input-group>
-                                </b-form-group>
-                            </b-col>
-
-                            <b-col lg="6" class="my-1">
-                                <b-form-group
-                                label="Initial sort"
-                                label-for="initial-sort-select"
-                                label-cols-sm="3"
-                                label-align-sm="right"
-                                label-size="sm"
-                                class="mb-0"
-                                >
-                                <b-form-select
-                                    id="initial-sort-select"
-                                    v-model="sortDirection"
-                                    :options="['asc', 'desc', 'last']"
-                                    size="sm"
-                                ></b-form-select>
-                                </b-form-group>
-                            </b-col>
-
-                            <b-col lg="6" class="my-1">
-                                <b-form-group
-                                label="Filter"
-                                label-for="filter-input"
-                                label-cols-sm="3"
-                                label-align-sm="right"
-                                label-size="sm"
-                                class="mb-0"
-                                >
-                                <b-input-group size="sm">
-                                    <b-form-input
-                                    id="filter-input"
-                                    v-model="filter"
-                                    type="search"
-                                    placeholder="Type to Search"
-                                    ></b-form-input>
-
-                                    <b-input-group-append>
-                                    <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-                                    </b-input-group-append>
-                                </b-input-group>
-                                </b-form-group>
-                            </b-col>
-
-                            <b-col lg="6" class="my-1">
-                                <b-form-group
-                                v-model="sortDirection"
-                                label="Filter On"
-                                description="Leave all unchecked to filter on all data"
-                                label-cols-sm="3"
-                                label-align-sm="right"
-                                label-size="sm"
-                                class="mb-0"
-                                v-slot="{ ariaDescribedby }"
-                                >
-                                <b-form-checkbox-group
-                                    v-model="filterOn"
-                                    :aria-describedby="ariaDescribedby"
-                                    class="mt-1"
-                                >
-                                    <b-form-checkbox value="name">Name</b-form-checkbox>
-                                    <b-form-checkbox value="age">Age</b-form-checkbox>
-                                    <b-form-checkbox value="isActive">Active</b-form-checkbox>
-                                </b-form-checkbox-group>
-                                </b-form-group>
-                            </b-col>
-
-                            <b-col sm="5" md="6" class="my-1">
-                                <b-form-group
-                                label="Per page"
-                                label-for="per-page-select"
-                                label-cols-sm="6"
-                                label-cols-md="4"
-                                label-cols-lg="3"
-                                label-align-sm="right"
-                                label-size="sm"
-                                class="mb-0"
-                                >
-                                <b-form-select
-                                    id="per-page-select"
-                                    v-model="perPage"
-                                    :options="pageOptions"
-                                    size="sm"
-                                ></b-form-select>
-                                </b-form-group>
-                            </b-col>
-
-                            <b-col sm="7" md="6" class="my-1">
-                                <b-pagination
-                                v-model="currentPage"
-                                :total-rows="totalRows"
+                        <transition name="fade2">
+                            <div class="container-fluid position-relative" style="height: 20vh" v-if="!masterRuasView && !homeView">
+                                <span class="d-empty text-center font-italic text-muted">
+                                    Please select page on beside to the contain..
+                                </span>
+                            </div>
+                        </transition>
+                        <transition name="fade2">
+                            <b-container fluid class="my-4 px-0" v-if="masterRuasView || homeView">
+                                <!-- User Interface controls -->
+                                <b-row class="justify-content-between mb-2">
+                                    <b-col sm="4" md="4" class="my-1 d-flex align-self-center">
+                                        <span class="mr-2">
+                                            Show
+                                        </span>
+                                        <b-form-select
+                                        id="per-page-select"
+                                        v-model="perPage"
+                                        :options="pageOptions"
+                                        size="sm"
+                                        ></b-form-select>
+                                        <span class="ml-2">
+                                            entries
+                                        </span>
+                                    </b-col>
+    
+                                    <b-col sm="5" md="3" class="my-1">
+                                        <div class="form-label-group">
+                                            <b-input
+                                            v-model="filter"
+                                            type="search"
+                                            ></b-input>
+                                            <label>
+                                                <b-icon icon="search"></b-icon>
+                                                Search
+                                            </label>
+                                        </div>
+                                    </b-col>
+                                </b-row>
+    
+                                <!-- Main table element -->
+                                <b-table
+                                :items="items"
+                                :fields="fields"
+                                :current-page="currentPage"
                                 :per-page="perPage"
-                                align="fill"
-                                size="sm"
-                                class="my-0"
-                                ></b-pagination>
-                            </b-col>
-                            </b-row>
+                                sticky-header="200px"
+                                no-border-collapse
+                                show-empty
+                                small
+                                >
+                                    <template #cell(name)="row">
+                                        {{ row.value.first }} {{ row.value.last }}
+                                    </template>
+    
+                                    <template #cell(actions)="row">
+                                        <b-button size="sm" @click="info(row.item, row.index, $event.target)" class="mr-1">
+                                        Info modal
+                                        </b-button>
+                                        <b-button size="sm" @click="row.toggleDetails">
+                                        {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
+                                        </b-button>
+                                    </template>
+    
+                                    <template #row-details="row">
+                                        <b-card>
+                                        <ul>
+                                            <li v-for="(value, key) in row.item" :key="key">{{ key }}: {{ value }}</li>
+                                        </ul>
+                                        </b-card>
+                                    </template>
+                                </b-table>
+    
+                                <b-row>
+                                    <div class="col">
+                                        <small>
+                                            Showing <b>1</b> to <b>{{perPage}}</b> of <b>{{totalRows}}</b> entries
+                                        </small>
+                                    </div>
+                                    <div class="col">
+                                        <b-pagination
+                                        v-model="currentPage"
+                                        :total-rows="totalRows"
+                                        :per-page="perPage"
+                                        align="fill"
+                                        size="sm"
+                                        class="my-0"
+                                        ></b-pagination>
+                                    </div>
+                                </b-row>
+                                <!-- Info modal -->
+                                <b-modal :id="infoModal.id" :title="infoModal.title" ok-only @hide="resetInfoModal">
+                                <pre>{{ infoModal.content }}</pre>
+                                </b-modal>
+                            </b-container>
+                        </transition>
 
-                            <!-- Main table element -->
-                            <b-table
-                            :items="items"
-                            :fields="fields"
-                            :current-page="currentPage"
-                            :per-page="perPage"
-                            :filter="filter"
-                            :filter-included-fields="filterOn"
-                            :sort-by.sync="sortBy"
-                            :sort-desc.sync="sortDesc"
-                            :sort-direction="sortDirection"
-                            stacked="md"
-                            show-empty
-                            small
-                            @filtered="onFiltered"
-                            >
-                            <template #cell(name)="row">
-                                {{ row.value.first }} {{ row.value.last }}
-                            </template>
-
-                            <template #cell(actions)="row">
-                                <b-button size="sm" @click="info(row.item, row.index, $event.target)" class="mr-1">
-                                Info modal
-                                </b-button>
-                                <b-button size="sm" @click="row.toggleDetails">
-                                {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
-                                </b-button>
-                            </template>
-
-                            <template #row-details="row">
-                                <b-card>
-                                <ul>
-                                    <li v-for="(value, key) in row.item" :key="key">{{ key }}: {{ value }}</li>
-                                </ul>
-                                </b-card>
-                            </template>
-                            </b-table>
-
-                            <!-- Info modal -->
-                            <b-modal :id="infoModal.id" :title="infoModal.title" ok-only @hide="resetInfoModal">
-                            <pre>{{ infoModal.content }}</pre>
-                            </b-modal>
-                        </b-container>
+                        
                     </section>
 
                 </div>
             </div>
         </div>
+
+        <section class="bg-animate">
+            <div class='light x1'></div>
+            <div class='light x2'></div>
+            <div class='light x3'></div>
+            <div class='light x4'></div>
+            <div class='light x5'></div>
+            <div class='light x6'></div>
+            <div class='light x7'></div>
+            <div class='light x8'></div>
+            <div class='light x9'></div>
+        </section>
     </div>
 </template>
 
@@ -250,6 +190,8 @@
         data() {
             return {
                 endpoint: process.env.VUE_APP_ENDPOINT,
+                homeView: true,
+                masterRuasView: false,
                 items: [
                     { isActive: true, age: 40, name: { first: 'Dickerson', last: 'Macdonald' } },
                     { isActive: false, age: 21, name: { first: 'Larsen', last: 'Shaw' } },
@@ -293,9 +235,6 @@
                     currentPage: 1,
                     perPage: 5,
                     pageOptions: [5, 10, 15, { value: 100, text: "Show a lot" }],
-                    sortBy: '',
-                    sortDesc: false,
-                    sortDirection: 'asc',
                     filter: null,
                     filterOn: [],
                     infoModal: {
@@ -308,21 +247,11 @@
         created() {
             // console.log(`===========> this.endpoint `, this.endpoint)
         },
-        computed: {
-            sortOptions() {
-                // Create an options list from our fields
-                return this.fields
-                .filter(f => f.sortable)
-                .map(f => {
-                    return { text: f.label, value: f.key }
-                })
-            }
-            },
-            mounted() {
-            // Set the initial number of items
+        mounted() {
+        // Set the initial number of items
             this.totalRows = this.items.length
-            },
-            methods: {
+        },
+        methods: {
             info(item, index, button) {
                 this.infoModal.title = `Row index: ${index}`
                 this.infoModal.content = JSON.stringify(item, null, 2)
@@ -332,12 +261,27 @@
                 this.infoModal.title = ''
                 this.infoModal.content = ''
             },
-            onFiltered(filteredItems) {
-                // Trigger pagination to update the number of buttons/pages due to filtering
-                this.totalRows = filteredItems.length
-                this.currentPage = 1
+            setPage(value){
+                const { homeView, masterRuasView } = this;
+                if(value == 'home'){
+                    if(homeView == false){
+                        this.homeView = true;
+                        this.masterRuasView = false;
+                    } else {
+                        this.homeView = false;
+                    }
+                } else if(value == 'master-ruas'){
+                    if(masterRuasView == false){
+                        this.masterRuasView = true;
+                        this.homeView = false;
+                    } else {
+                        this.masterRuasView = false;
+                    }
+                }
+
+                console.log(`*** value ==> `, value)
             }
-            }
+        },
     }
 </script>
 
