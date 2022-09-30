@@ -127,11 +127,11 @@
     
                                     <template #cell(aksi)="row">
                                         <div class="d-flex justify-content-center">
-                                            <b-icon role="button" icon="pencil-fill" class="mx-1" @click="edit(row.data.id)">
+                                            <b-icon role="button" icon="pencil-fill" class="mx-1" @click="edit(row.value)">
                                             </b-icon>
-                                            <b-icon role="button" icon="eye-fill" class="mx-1" @click="edit(row.data.id)">
+                                            <b-icon role="button" icon="eye-fill" class="mx-1" @click="edit(row.value.id)">
                                             </b-icon>
-                                            <b-icon role="button" icon="trash-fill" class="mx-1" @click="edit(row.data.id)">
+                                            <b-icon role="button" icon="trash-fill" class="mx-1" @click="del(row.value.id)">
                                             </b-icon>
                                         </div>
                                     </template>
@@ -241,11 +241,112 @@
             this.canvasBar()
         },
         methods: {
+            del(value){
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Anda yakin?',
+                    text: 'Anda akan menghapus data ini!',
+                    showCancelButton: true,
+                    confirmButtonColor: 'rgb(101, 194, 93)',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, hapuskan!',
+                    cancelButtonText: 'Batal',
+                })
+                .then((res) => {
+                    if(res.isConfirmed){
+                        const api = `${this.endpoint}/${value}`
+                        axios.delete(api)
+                        .then((res) => {
+                            const data_result = res.data;
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 1500,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                                })
+
+                                Toast.fire({
+                                    icon: 'success',
+                                    title: 'Hapus Berhasil!',
+                                    html: `
+                                        Anda berhasil menghapus data <b>${data_result.ruas.toUpperCase()}</b> pada <b>${data_result.unit.toUpperCase()}</b>.
+                                    `
+                                })
+                                .then(() => {
+                                    this.getDataRuas()
+                                })
+                            console.log(`===========> data_result `, data_result)
+                        })
+                        .catch((err) => {
+                            const error = err.response;
+                            console.log(`===========> error `, error)
+                        })
+                    }
+                })
+            },
             edit(value){
                 console.log(`===========> value `, value)
+                const unit = value.unit;
+                const ruas = value.ruas;
+                const gambar = value.picture;
+                const tanggal = value.date_create.slice(0, 10);
+
                 Swal.fire({
-                    icon: 'success',
-                    title: 'Sukses coba'
+                    title: 'Detail Ruas',
+                    html: `
+                    <div class='container text-left'>
+                        <label for="unit_kerja">
+                            <small class="ml-1">
+                                Unit Kerja
+                            </small>
+                        </label>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="unit_kerja" value='${unit}'>
+                        </div>
+
+                        <label for="ruas">
+                            <small class="ml-1">
+                                Ruas
+                            </small>
+                        </label>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="ruas" value='${ruas}'>
+                        </div>
+
+                        <label for="gambar">
+                            <small class="ml-1">
+                                Gambar
+                            </small>
+                        </label>
+                        <div class="mb-3">
+                            <img src="${gambar}" class="img-thumbnail">
+                        </div>
+
+                        <label for="tanggal">
+                            <small class="ml-1">
+                                Tanggal
+                            </small>
+                        </label>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="tanggal" value='${tanggal}'>
+                        </div>
+
+                        <label for="status">
+                            <small class="ml-1">
+                                Status
+                            </small>
+                        </label>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="status" value='Aktif' readonly>
+                        </div>
+                    </div>
+                    `
+                    
                 })
             },
             getDataRuas(){
