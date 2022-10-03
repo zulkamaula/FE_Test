@@ -221,7 +221,7 @@
                 totalRows: 1,
                 currentPage: 1,
                 perPage: 5,
-                pageOptions: [5, 10, 15, { value: 100, text: "Show a lot" }],
+                pageOptions: [5, 10, 15, { value: null, text: "Show a lot" }],
                 filter: null,
                 filterOn: [],
                 infoModal: {
@@ -367,6 +367,14 @@
                     this.items = data_items;
                     console.log(`===========> items `, this.items)
                     this.totalRows = this.items.length;
+                    this.pageOptions.map((i) => {
+                        if(typeof(i) !== 'number'){
+                            if(i.value == null) {
+                                i.value = this.totalRows;
+                            }
+                        }
+                    })
+                    console.log(`*** this.pageOptions ==> `, this.pageOptions)
                 })
                 .catch((err) => {
                     const error = err.response;
