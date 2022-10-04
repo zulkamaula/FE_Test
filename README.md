@@ -1,8 +1,8 @@
 # data-ruas-app
 
-This application was created for the purpose of testing the Front End position using Vue JS which I chose as the framework tool. 
+This application was created for the purpose of testing at Jasa Marga as Front-End Developer. In this cases i using VueJS, Bootstrap-Vue, SweetAlert2, Axios which I chose as the framework tool to build this app. 
 
-##### See the results on SCREENSHOT below : 
+#### Let's see the results on SCREENSHOOT below
 Picture 1 - Main Board
 ![image](https://user-images.githubusercontent.com/74296102/193723492-42f3f114-cb59-4f19-805b-f5597f4d6d68.png)
 
