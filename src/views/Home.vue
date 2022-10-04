@@ -298,14 +298,15 @@
                     `
                 })
             },
-            edit(value){
+            async edit(value){
                 console.log(`===========> value `, value)
+                const id = value.id;
                 const unit = value.unit;
                 const ruas = value.ruas;
                 const gambar = value.picture;
                 const tanggal = value.date_create.slice(0, 10);
 
-                Swal.fire({
+                const { value: formEditValues } = await Swal.fire({
                     title: 'Detail Ruas',
                     html: `
                     <div class='container text-left'>
@@ -342,7 +343,7 @@
                             </small>
                         </label>
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control" id="tanggal" value='${tanggal}'>
+                            <input type="text" class="form-control" id="tanggal" value='${tanggal}' readonly>
                         </div>
 
                         <label for="status">
@@ -351,7 +352,7 @@
                             </small>
                         </label>
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control" id="status" value='Aktif'>
+                            <input type="text" class="form-control" id="status" value='Aktif' readonly>
                         </div>
                     </div>
                     `,
@@ -360,63 +361,86 @@
                     cancelButtonColor: '#d33',
                     confirmButtonText: 'Ya, Ubah!',
                     cancelButtonText: 'Batal',
-                })
-                .then((res) => {
-                    if(res.isConfirmed){
-                        Swal.fire({
-                    icon: 'warning',
-                    title: 'Anda yakin?',
-                    text: 'Anda akan mengubah data ini!',
-                    showCancelButton: true,
-                    confirmButtonColor: 'rgb(101, 194, 93)',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Ya, ubah!',
-                    cancelButtonText: 'Batal',
-                })
-                .then((res) => {
-                    const elRuas = document.getElementById('ruas').value;
-                    console.log(`*** elRuas ==> `, elRuas)
-                    if(res.isConfirmed){
-                        const api = `${this.endpoint}/${value}`
-                        const data = {
-                            ruas : document.getElementById('ruas'),
-                            unit : document.getElementById('unit_kerja')
-                        }
-                        axios.put(api, data)
-                        .then((res) => {
-                            const data_result = res.data;
-                            const Toast = Swal.mixin({
-                                toast: true,
-                                position: 'center',
-                                showConfirmButton: false,
-                                timer: 2000,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                }
-                                })
+                    preConfirm: () => {
+                        const unit_kerja = document.getElementById('unit_kerja').value;
+                        const ruas_kerja = document.getElementById('ruas').value;
 
-                                Toast.fire({
-                                    icon: 'success',
-                                    title: 'Ubah Data Berhasil!',
-                                    html: `
-                                        Anda berhasil mengubah data <b>${data_result.ruas.toUpperCase()}</b> pada <b>${data_result.unit.toUpperCase()}</b>.
-                                    `
-                                })
-                                .then(() => {
-                                    this.getDataRuas()
-                                })
-                            console.log(`===========> data_result `, data_result)
-                        })
-                        .catch((err) => {
-                            const error = err.response;
-                            console.log(`===========> error `, error)
-                        })
+                        return {
+                            unit_kerja,
+                            ruas_kerja,
+                        }
                     }
                 })
-                    }
-                })
+
+                const unit_value = formEditValues.unit_kerja;
+                const ruas_value = formEditValues.ruas_kerja;
+
+                if (unit_value !== undefined && ruas_value !== undefined) {
+                    Swal.fire({
+                            icon: 'warning',
+                            title: 'Anda yakin?',
+                            text: 'Anda akan mengubah data ini!',
+                            showCancelButton: true,
+                            confirmButtonColor: 'rgb(101, 194, 93)',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Ya, ubah!',
+                            cancelButtonText: 'Batal',
+                        })
+                        .then((res) => {
+                            
+                            if(res.isConfirmed){
+                                Swal.fire({
+                                    toast: true,
+                                    title: 'Please wait..',
+                                    html: 'The data you entered is being sent!',
+                                    showConfirmButton: false,
+                                    allowOutsideClick: false,
+                                    allowEnterKey: false,
+                                    allowEscapeKey: false,
+                                    didOpen: () => {
+                                        Swal.showLoading()
+                                    }
+                                })
+                                const api = `${this.endpoint}/${id}`
+                                const data = {
+                                    ruas : ruas_value,
+                                    unit : unit_value,
+                                }
+                                axios.put(api, data)
+                                .then((res) => {
+                                    // Swal.hideLoading()
+                                    const data_result = res.data;
+                                    const Toast = Swal.mixin({
+                                        toast: true,
+                                        position: 'center',
+                                        showConfirmButton: false,
+                                        timer: 2000,
+                                        timerProgressBar: true,
+                                        didOpen: (toast) => {
+                                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                        }
+                                        })
+
+                                        Toast.fire({
+                                            icon: 'success',
+                                            title: 'Ubah Data Berhasil!',
+                                            html: `
+                                                Anda berhasil mengubah data menjadi <b>${data_result.ruas.toUpperCase()}</b> pada <b>${data_result.unit.toUpperCase()}</b>.
+                                            `
+                                        })
+                                        .then(() => {
+                                            this.getDataRuas()
+                                        })
+                                    console.log(`===========> data_result `, data_result)
+                                })
+                                .catch((err) => {
+                                    const error = err.response;
+                                    console.log(`===========> error `, error)
+                                })
+                            }
+                        })
+                }
             },
             view(value){
                 console.log(`===========> value `, value)
