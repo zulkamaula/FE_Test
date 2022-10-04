@@ -459,7 +459,7 @@
                             </small>
                         </label>
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control" id="unit_kerja" value='${unit}'>
+                            <input type="text" class="form-control" id="unit_kerja" value='${unit}' readonly>
                         </div>
 
                         <label for="ruas">
@@ -468,7 +468,7 @@
                             </small>
                         </label>
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control" id="ruas" value='${ruas}'>
+                            <input type="text" class="form-control" id="ruas" value='${ruas}' readonly>
                         </div>
 
                         <label for="gambar">
@@ -486,7 +486,7 @@
                             </small>
                         </label>
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control" id="tanggal" value='${tanggal}'>
+                            <input type="text" class="form-control" id="tanggal" value='${tanggal}' readonly>
                         </div>
 
                         <label for="status">
